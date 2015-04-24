@@ -4,6 +4,7 @@
   "dependencies": {
     "bootstrap": "~3.2.0",
     "growl": "~1.2.5",
-    "jqueryvalidate": "*"
+    "jquery-validate": "~1.13.1",
+    "DataTables": "~1.10.5"
   }
 }
