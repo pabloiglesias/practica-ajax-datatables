@@ -81,7 +81,7 @@
       <div class="header">
         <h2 class="text-muted">Doctores</h2>
           <div class="botones">
-            <button type="button" id='nuevoDoctor' class="btn btn-success " data-toggle="modal" data-target="#modalFormulario">
+            <button type="button" id='nuevoDoctor' class="btn btn-success" data-toggle="modal" data-target="">
                   Nuevo doctor</button>
             <a href="https://github.com/pabloiglesias/practica-ajax-datatables" class="btn btn-primary">Proyecto en GitHub</a>
           </div>
@@ -107,17 +107,12 @@
                      </tfoot>
                  </table>
              </div>
-
-      
-
-      
-
       <div class="footer">
-        <p><span class="glyphicons glyphicons-stroller"></span> Mafalda y Chloé</p>
+        <p><span></span> Mafalda y Chloé</p>
       </div>
 
     </div>
-    <!-- Modal EDITAR-->
+    <!-- Modal-->
     <div class="modal fade" id="forEditar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -149,7 +144,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                            <input type="submit" class="btn btn-primary" id="ConfirmaGuardar" value="Guardar">
+                            <input type="submit" class=" editarbtn btn btn-primary" id="ConfirmaGuardar" value="Guardar">
                         </div>
                     </form>
                 </div>
@@ -159,9 +154,7 @@
     </div>
 
     <!-- Modal BORRAR -->
-    <div class="modal fade" id="forBorrar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <!--El imput type hidden guarda el id_doctor cada vez que pulsamos editar-->
-        <input  type="hidden" id="id_docBorrar" value="">
+    <div class="modal fade in" id="forBorrar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -170,6 +163,8 @@
                 </div>
                 <div class="modal-body">
                     <p>¿Seguro que quieres borrar el doctor?</p>
+                    <span><button class=" btn btn-default" id="borrarDoctor">Borrar</button>
+                    <button class=" btn btn-warning" id="CancelarDoctor">Cancelar</button></span>
 
                 </div>
                 <div class="modal-footer">
@@ -180,7 +175,7 @@
         </div>
     </div>
     <!-- Crear Doctor-->
-    <div class="modal fade" id="forCrear" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade in" id="forCrear" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -222,7 +217,8 @@
             </div>
         </div>
     </div>
-       <!-- build:js(.) scripts/vendor.js -->
+    </div>
+    <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
     <script src="bower_components/growl/javascripts/jquery.growl.js"></script>

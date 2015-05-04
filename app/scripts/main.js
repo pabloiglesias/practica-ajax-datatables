@@ -13,10 +13,10 @@ var clinicas = $.ajax({
             });
         })
         .fail(function() {
-            console.log("error al cargar la lista de clinicas");
+            console.log('error al cargar la lista de clinicas');
         })
         .always(function() {
-            console.log("complete");
+            console.log('complete');
         });
 /////////////////////carga de los datos de la tabla/////////////////////////////////////////
 $(document).ready(function(){
@@ -56,15 +56,13 @@ $('#miTabla').DataTable({
                'data': 'nombre_clinica'
            }, {
                'data': 'numcolegiado',
-               /*añadimos las clases editarbtn y borrarbtn para procesar los eventos click de los botones. No lo hacemos mediante id ya que habrá más de un
-               botón de edición o borrado*/
-               'render': function(data) {
-                   return '<button class="editar btn btn-primary " value=' + data + '>Editar</button>';
+                'render': function(data) {
+                   return '<button class="editar btn btn-primary" data-toggle="modal" data-target="#forEditar" >Editar</button>';
                }
            },{
-               'data': 'numcolegiado',
+               'data': 'nombre_doctor',
                 'render': function(data) {
-                   return '<button class=" borrar btn btn-warning " value=' + data + '>Borrar</button>';
+                   return '<button class="borrar btn btn-warning" data-toggle="modal" data-target="#forBorrar" >Borrar</button>';
                }
            }
        	]
@@ -73,32 +71,40 @@ $('#miTabla').DataTable({
 ////////////// Modal ///////////////////////
 
 ///////////// Editar doctor/////////////////
-$('#mitabla').on('click', '#editar', function (e) {
+$('#miTabla').on('click', '.editar', function (e) {
            e.preventDefault();
-           var nRow = $(this).parents('tr')[0];
-           var aData = $('#miTabla').row(nRow).data();
-           $('.inputNombre').val(aData.nombre_doctor);
-           $('#numcolegiado').val(aData.numcolegiado);
-           var clinicasOn = aData.clinicas;
-           var clin = clinicasOn.split(',');
-           $('#forEditar').modal('show');
-            });
-$('#editarbtn').click(function (e) {
+           $('#forEditar').fadeIn('300');
+
+           });
+//////////////borrar doctor//////////////////////7
+$('#miTabla').on('click','.borrar',function (e){
   e.preventDefault();
-  $('#formulario').validate({
-    rules: {
-      nombre: {
-        required: true,
-        lettersonly: true
-      },
-      numcolegiado: {
-        digits: true
-      },
-      clinicas: {
-        required: true,
-        minlength: '1'
-      }
-    }
+  $('#forBorrar').fadeIn("300");
+  $('#borrarDoctor').click(function(e){
+    e.preventDefault();
+    var borrar=$.ajax({
+        data:{
+          doctor:nombre_doctor
+        },
+        url: 'php/borrar.php',
+        type: 'POST',
+        dataType: 'json'
+
+    })
+      .done(function() {
+            
+            });
+        })
+        .fail(function() {
+            
+        });
+
   });
+});
+
+
+
+
+
 });
  
