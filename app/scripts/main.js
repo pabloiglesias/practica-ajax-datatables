@@ -1,6 +1,79 @@
 'use strict';
+/////////////////////Preparacion del documento y definicion de variables///////////
+ $(document).ready(function () {
+       var clinicas;
+       var docOriginal;
+       var validaciones = $('#formulario').validate({
+           rules: {
+               nombre: {
+                   required: true,
+                   lettersonly: true
+               },
+               numcolegiado: {
+                   digits: true
+               },
+               clinicas: {
+                   required: true,
+                   minlength: '1'
+               }
+           }
+       });
+////////////////////Validacion del Nuevo doctor////////////////////////////////////
+function validar(opciones) {
+           validaciones.resetForm();
+           $('#formulario').show();
+           $('#forCrear').modal('hide');
+           var doctor = $('#Nombre').val();
+           var numcolegiado = $('#Colegiado').val();
+           var clinicas = $('#inputClinicas').val();
+           // validar datos
+           if (opciones == 'nuevo') {
+               var php = 'php/nuevo.php';
+           } else {
+               var php = 'php/modificar_doctor.php';
+           }
+           var promesa = $.ajax({
+               data: {
+                   docO: docOriginal,
+                   doctor: doctor,
+                   numcolegiado: numcolegiado,
+                   clinicas: clinicas
+               },
+               dataType: 'json',
+               type: 'POST',
+               url: php,
+           });
+           emergentes(promesa);
+       }
+// Fin de validarDatos       
+////////////////////Ventanas emergentes de coontrol////////////////////////////////
+function emergentes(resultado){
+resultado.done(function(){
+var mensaje = doctor[0]['mensaje'];
+               if (doctor[0]['estado'] == 0) {
+                   $.growl({
+                       message: mensaje,
+                       style: 'error',
+                       title: 'Error !!!',
+                   });
+                   clinicas.draw();
+               } else {
+                   $.growl({
+                       style: 'notice',
+                       title: 'OK !!!',
+                       message: mensaje
+                   });
+                   clinicas.draw();
+               }
+           });
+           resultado.fail(function () {
+               $.growl.error({
+                   message: 'Error en la consulta.'
+               });
+});
+}//Fin de emegentes
 ////////////////////CARGA INICIAL DE LA CLINICAS PARA SU POSTERIOR USO//////////////////
-var clinicas = $.ajax({
+ clinicas = $.ajax({
         
         url: 'php/clinicas.php',
         type: 'GET',
@@ -79,32 +152,33 @@ $('#miTabla').on('click', '.editar', function (e) {
 //////////////borrar doctor//////////////////////7
 $('#miTabla').on('click','.borrar',function (e){
   e.preventDefault();
-  $('#forBorrar').fadeIn("300");
+  $('#forBorrar').fadeIn('300');
   $('#borrarDoctor').click(function(e){
     e.preventDefault();
-    var borrar=$.ajax({
+    $('#forBorrar').hide();
+    var resultado=$.ajax({
         data:{
           doctor:nombre_doctor
         },
         url: 'php/borrar.php',
         type: 'POST',
         dataType: 'json'
-
-    })
-      .done(function() {
-            
-            });
-        })
-        .fail(function() {
-            
-        });
+    });
+    emergentes(resultado);
+      
+});
+});//fin de Borrar
+//Metodo para Crear Doctor
+$('#nuevoDoctor').click(function(e){
+  e.preventDefault();
+  $('#forCrear').fadeIn('300');
+  $('#confimarCrear').click(function(e){
+    e.preventDefault();
+    if (validaciones.form()){
+      validar('nuevo');
+    }
 
   });
+
+});//fin de Nuevo Doctor
 });
-
-
-
-
-
-});
- 

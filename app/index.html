@@ -34,7 +34,6 @@
                 </button>
                 <a class="navbar-brand" href="#">SSP</a>
             </div>
-
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
@@ -75,13 +74,11 @@
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
-
-
     <div class="container">
       <div class="header">
         <h2 class="text-muted">Doctores</h2>
           <div class="botones">
-            <button type="button" id='nuevoDoctor' class="btn btn-success" data-toggle="modal" data-target="">
+            <button type="button" id='nuevoDoctor' class="btn btn-success" data-toggle="modal" data-target="#forCrear">
                   Nuevo doctor</button>
             <a href="https://github.com/pabloiglesias/practica-ajax-datatables" class="btn btn-primary">Proyecto en GitHub</a>
           </div>
@@ -143,7 +140,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">Cancelar</button>
                             <input type="submit" class=" editarbtn btn btn-primary" id="ConfirmaGuardar" value="Guardar">
                         </div>
                     </form>
@@ -154,7 +151,7 @@
     </div>
 
     <!-- Modal BORRAR -->
-    <div class="modal fade in" id="forBorrar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="forBorrar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -163,19 +160,16 @@
                 </div>
                 <div class="modal-body">
                     <p>¿Seguro que quieres borrar el doctor?</p>
-                    <span><button class=" btn btn-default" id="borrarDoctor">Borrar</button>
-                    <button class=" btn btn-warning" id="CancelarDoctor">Cancelar</button></span>
-
-                </div>
+                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="ConfirmaBorrar">Borrar</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="borrarDoctor">Borrar</button>
                 </div>
             </div>
         </div>
     </div>
     <!-- Crear Doctor-->
-    <div class="modal fade in" id="forCrear" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="forCrear" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -200,20 +194,16 @@
                         <div class="form-group">
                             <label for="inputClinicas" class="col-sm-4 control-label">Clinicas</label>
                             <div class="col-sm-8">
-                                <select multiple class="form-control listaClinicas" id="inputCrearClinicas" name="clinicas" required="true">
-                                    <!--AQUI SE CARGA LA LISTA DE CLINIAS-->
+                                <select multiple class="form-control listaClinicas" id="inputClinicas" name="clinicas" required="true">
                                 </select>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                           <input type="submit" class="btn btn-primary" id="ConfirmaCrear" value="Guardar">
-
-
+                           <input type="submit" class="btn btn-primary" id="confirmaCrear" value="Guardar">
                         </div>
                     </form>
                 </div>
-
             </div>
         </div>
     </div>
