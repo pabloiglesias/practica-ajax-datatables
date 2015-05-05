@@ -2,12 +2,14 @@
 /////////////////////Preparacion del documento y definicion de variables///////////
  $(document).ready(function () {
        var clinicas;
+       var miTabla;
        var docOriginal;
+       var php;
        var validaciones = $('#formulario').validate({
            rules: {
                nombre: {
                    required: true,
-                   lettersonly: true
+                   lettersonlywithspaces: true
                },
                numcolegiado: {
                    digits: true
@@ -16,21 +18,34 @@
                    required: true,
                    minlength: '1'
                }
-           }
+           },
+           messages:{
+                nombre:{
+                  required: 'Debes introducir el nombre del doctor',
+                  lettersonlywithspaces: 'Introduce solo caracteres'
+                },
+                colegiado:{
+                  digits: 'Introduce solo digitos'
+                },
+                clinica:{
+                  required: 'Debes marcar al menos una clinica'
+                }
+              },
+              submitHandler:function(){}
        });
 ////////////////////Validacion del Nuevo doctor////////////////////////////////////
 function validar(opciones) {
            validaciones.resetForm();
            $('#formulario').show();
-           $('#forCrear').modal('hide');
+           $('#forCrear').fadeout('hide');
            var doctor = $('#Nombre').val();
            var numcolegiado = $('#Colegiado').val();
            var clinicas = $('#inputClinicas').val();
            // validar datos
            if (opciones == 'nuevo') {
-               var php = 'php/nuevo.php';
+                php = 'php/nuevo.php';
            } else {
-               var php = 'php/modificar_doctor.php';
+                php = 'php/modificar_doctor.php';
            }
            var promesa = $.ajax({
                data: {
@@ -44,8 +59,7 @@ function validar(opciones) {
                url: php,
            });
            emergentes(promesa);
-       }
-// Fin de validarDatos       
+       }// Fin de validar       
 ////////////////////Ventanas emergentes de coontrol////////////////////////////////
 function emergentes(resultado){
 resultado.done(function(){
@@ -82,7 +96,7 @@ var mensaje = doctor[0]['mensaje'];
     })
         .done(function(data) {
             $.each(data, function(index) {
-                $('.listaClinicas').append('<option class="option" value="'+data[index].id_clinica+'" >' + data[index].nombre + '</option>');
+                $('.listaClinicas').append('<option class="option" value="'+data[index].idclinica+'" >' + data[index].nombre + '</option>');
             });
         })
         .fail(function() {
@@ -92,8 +106,7 @@ var mensaje = doctor[0]['mensaje'];
             console.log('complete');
         });
 /////////////////////carga de los datos de la tabla/////////////////////////////////////////
-$(document).ready(function(){
-$('#miTabla').DataTable({
+  miTabla=$('#miTabla').DataTable({
     	   'processing': true,
            'serverSide': true,
            'ajax': 'php/cargar.php',           
@@ -121,26 +134,34 @@ $('#miTabla').DataTable({
                    'sSortDescending': ': Activar para ordenar la columna de manera descendente'
                }
            },
-           'columns': [{
-               'data': 'nombre_doctor'
-           }, {
-               'data': 'numcolegiado'
-           }, {
-               'data': 'nombre_clinica'
-           }, {
-               'data': 'numcolegiado',
-                'render': function(data) {
+           'columns': 
+           [
+           {
+              'data': 'nombre_doctor',
+              'render':function(data){
+                return '<a href="#" data-toggle="modal" data-target="#forEditar" class="editar" >'+ data +'</a>';
+               }
+           }, 
+           {
+              'data': 'numcolegiado'
+           },
+           {
+              'data': 'nombre_clinica'
+           },
+           {
+              'data': 'numcolegiado',
+               'render': function(data) {
                    return '<button class="editar btn btn-primary" data-toggle="modal" data-target="#forEditar" >Editar</button>';
                }
-           },{
-               'data': 'nombre_doctor',
-                'render': function(data) {
+           },
+           {
+              'data': 'nombre_doctor',
+               'render': function(data) {
                    return '<button class="borrar btn btn-warning" data-toggle="modal" data-target="#forBorrar" >Borrar</button>';
                }
            }
-       	]
+           ]
        });
-});
 ////////////// Modal ///////////////////////
 
 ///////////// Editar doctor/////////////////
@@ -152,13 +173,16 @@ $('#miTabla').on('click', '.editar', function (e) {
 //////////////borrar doctor//////////////////////7
 $('#miTabla').on('click','.borrar',function (e){
   e.preventDefault();
-  $('#forBorrar').fadeIn('300');
+  $('#forBorrar').fadeIn('1000');
+  var nRow = $(this).parents('tr')[0];
+      var aData = miTabla.row(nRow).data();
+      var nombredoctor = aData.nombre;
   $('#borrarDoctor').click(function(e){
     e.preventDefault();
-    $('#forBorrar').hide();
+    $('#forBorrar').modal('hide');
     var resultado=$.ajax({
         data:{
-          doctor:nombre_doctor
+          doctor:nombredoctor
         },
         url: 'php/borrar.php',
         type: 'POST',
@@ -179,6 +203,5 @@ $('#nuevoDoctor').click(function(e){
     }
 
   });
-
 });//fin de Nuevo Doctor
 });

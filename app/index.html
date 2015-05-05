@@ -5,7 +5,7 @@
     <title>practica ajax datatables</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
-    <link rel="shortcut icon" href="/favicon.ico">
+    <!--<link rel="shortcut icon" href="/favicon.ico">-- >
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(.) styles/vendor.css -->
     <!-- bower:css -->
@@ -77,13 +77,16 @@
     <div class="container">
       <div class="header">
         <h2 class="text-muted">Doctores</h2>
-          <div class="botones">
-            <button type="button" id='nuevoDoctor' class="btn btn-success" data-toggle="modal" data-target="#forCrear">
-                  Nuevo doctor</button>
-            <a href="https://github.com/pabloiglesias/practica-ajax-datatables" class="btn btn-primary">Proyecto en GitHub</a>
+          <div class="botones"class="btn-group" role="group">
+                  <button type="button" class="btn btn-default nuevo" id='nuevoDoctor' data-toggle="modal" data-target="#forCrear">Nuevo Doctor</button>
+                  <button type="button" class="btn btn-default">Excel</button>
+                  <button type="button" class="btn btn-default">PDF</button>
+                  <button type="button" class="btn btn-default">Imprimir</button>
+                   <a href="https://github.com/pabloiglesias/practica-ajax-datatables" class="btn btn-default">Proyecto en GitHub</a>
+                </div>
+                
           </div>
-      </div>
-       <div id="tabla" class="row">
+        <div id="tabla" class="row">
              <div class="col-md-12">
                  <table id="miTabla" class="table table-bordered table-hover" width="100%">
                      <thead>
@@ -109,8 +112,8 @@
       </div>
 
     </div>
-    <!-- Modal-->
-    <div class="modal fade" id="forEditar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <!-- Modal Editar-->
+    <div class="modal fade" id="forEditar">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -120,23 +123,22 @@
                 <div class="modal-body">
                     <form class="form-horizontal" id="Editar">
                             <div class="form-group">
-                            <label for="inputNombre" class="col-sm-4 control-label">Nombre</label>
+                            <label class="col-sm-4 control-label">Nombre<span class="important">*</span></label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" id="inputNombre" placeholder="Nombre" name="nombre">
+                                <input type="text" class="form-control" id="inputNombre" placeholder="Nombre y apellidos" name="nombre"/>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="inputColegiado" class="col-sm-4 control-label">Nº de Colegiado</label>
+                            <label class="col-sm-4 control-label">Nº de Colegiado</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" id="inputColegiado" placeholder="Nº de Colegiado" name="numColegiado">
+                                <input type="text" class="form-control" id="inputColegiado" placeholder="Nº de Colegiado" name="numColegiado"/>
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="inputClinicas" class="col-sm-4 control-label">Clinicas</label>
                             <div class="col-sm-8">
-                                <select multiple class="form-control listaClinicas" id="inputClinicas" name="clinicas">
-                                    
-                                </select>
+                                <select multiple="multiple" class="form-control" id="inputClinicas" name="clinicas"></select>
+                                <p><span class="important">*</span>Opcion requerida</p>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -151,7 +153,7 @@
     </div>
 
     <!-- Modal BORRAR -->
-    <div class="modal fade" id="forBorrar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="forBorrar">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -169,7 +171,7 @@
         </div>
     </div>
     <!-- Crear Doctor-->
-    <div class="modal fade" id="forCrear" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal fade" id="forCrear">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -182,13 +184,13 @@
                         <div class="form-group">
                             <label for="inputNombre" class="col-sm-4 control-label">Nombre</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" id="inputCrearNombre" name="nombre" placeholder="Nombre" required="true">
+                                <input type="text" class="form-control" id="Nombre" name="nombre" placeholder="Nombre" required="true">
                             </div>
                         </div>
                         <div class="form-group">
                             <label for="inputColegiado" class="col-sm-4 control-label">Nº de Colegiado</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" id="inputCrearColegiado" name="numColegiado" placeholder="Nº de Colegiado" required="true">
+                                <input type="text" class="form-control" id="Colegiado" name="numColegiado" placeholder="Nº de Colegiado" required="true">
                             </div>
                         </div>
                         <div class="form-group">

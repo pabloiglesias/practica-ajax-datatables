@@ -14,7 +14,7 @@ $result = mysql_query($query) or die("SQL Error: " . mysql_error());
 $data = array();
 while ($row = mysql_fetch_array($result, MYSQL_ASSOC)) {
 	$data[] = array(
-		'id_clinica' => $row['id_clinica'],
+		'idclinica' => $row['id_clinica'],
 		'nombre' => $row['nombre'],
 	);
 }
