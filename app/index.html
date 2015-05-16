@@ -9,9 +9,9 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(.) styles/vendor.css -->
     <!-- bower:css -->
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/datatables/media/css/jquery.dataTables.css" />
     <link rel="stylesheet" href="bower_components/growl/stylesheets/jquery.growl.css" />
-    <link rel="stylesheet" href="bower_components/DataTables/media/css/jquery.dataTables.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
@@ -19,12 +19,8 @@
     <!-- endbuild -->
   </head>
   <body>
-    <!--[if lt IE 10]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
     <nav class="navbar navbar-default">
         <div class="container-fluid">
-            <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span>
@@ -77,15 +73,14 @@
     <div class="container">
       <div class="header">
         <h2 class="text-muted">Doctores</h2>
-          <div class="botones"class="btn-group" role="group">
-                  <button type="button" class="btn btn-default nuevo" id='nuevoDoctor' data-toggle="modal" data-target="#forCrear">Nuevo Doctor</button>
+          <div class="botones"class="btn-group" id="botones" role="group">
+                  <button type="button" class="btn btn-default nuevo">Nuevo Doctor</button>
                   <button type="button" class="btn btn-default">Excel</button>
                   <button type="button" class="btn btn-default">PDF</button>
                   <button type="button" class="btn btn-default">Imprimir</button>
-                   <a href="https://github.com/pabloiglesias/practica-ajax-datatables" class="btn btn-default">Proyecto en GitHub</a>
-                </div>
-                
+            <a href="https://github.com/pabloiglesias/practica-ajax-datatables" class="btn btn-default">Proyecto en GitHub</a>
           </div>
+     </div>
         <div id="tabla" class="row">
              <div class="col-md-12">
                  <table id="miTabla" class="table table-bordered table-hover" width="100%">
@@ -110,10 +105,9 @@
       <div class="footer">
         <p><span></span> Mafalda y Chloé</p>
       </div>
-
-    </div>
-    <!-- Modal Editar-->
-    <div class="modal fade" id="forEditar">
+   </div>
+    <!-- Modal Editar y crear-->
+    <div class="modal fade" id="forEditar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -121,7 +115,7 @@
                     <h4 class="modal-title" id="myModalLabel">Editar doctor</h4>
                 </div>
                 <div class="modal-body">
-                    <form class="form-horizontal" id="Editar">
+                    <form class="form-horizontal " id="Editar" novalidate method="post">
                             <div class="form-group">
                             <label class="col-sm-4 control-label">Nombre<span class="important">*</span></label>
                             <div class="col-sm-8">
@@ -131,7 +125,7 @@
                         <div class="form-group">
                             <label class="col-sm-4 control-label">Nº de Colegiado</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" id="inputColegiado" placeholder="Nº de Colegiado" name="numColegiado"/>
+                                <input type="text" class="form-control" id="numcolegiado" placeholder="Nº de Colegiado" name="numcolegiado"/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -143,7 +137,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">Cancelar</button>
-                            <input type="submit" class=" editarbtn btn btn-primary" id="ConfirmaGuardar" value="Guardar">
+                            <input type="submit" class=" editarbtn btn btn-primary" id="ConfirmarGuardar" value="Guardar">
                         </div>
                     </form>
                 </div>
@@ -151,9 +145,8 @@
             </div>
         </div>
     </div>
-
     <!-- Modal BORRAR -->
-    <div class="modal fade" id="forBorrar">
+    <div class="modal fade" id="forBorrar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -164,78 +157,27 @@
                     <p>¿Seguro que quieres borrar el doctor?</p>
                  </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" aria-label="Close">Cancelar</button>
+                    <button type="button" class="close btn btn-primary" data-dismiss="modal" aria-label="Close">Cancelar</button>
                     <button type="button" class="btn btn-primary" id="borrarDoctor">Borrar</button>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Crear Doctor-->
-    <div class="modal fade" id="forCrear">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="mycrearModalLabel">Datos del doctor</h4>
-                </div>
-                <div class="modal-body">
-                    <form class="form-horizontal" id="formularioCrear">
-
-                        <div class="form-group">
-                            <label for="inputNombre" class="col-sm-4 control-label">Nombre</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" id="Nombre" name="nombre" placeholder="Nombre" required="true">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputColegiado" class="col-sm-4 control-label">Nº de Colegiado</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" id="Colegiado" name="numColegiado" placeholder="Nº de Colegiado" required="true">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputClinicas" class="col-sm-4 control-label">Clinicas</label>
-                            <div class="col-sm-8">
-                                <select multiple class="form-control listaClinicas" id="inputClinicas" name="clinicas" required="true">
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                           <input type="submit" class="btn btn-primary" id="confirmaCrear" value="Guardar">
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
+ </div>
     <!-- build:js(.) scripts/vendor.js -->
     <!-- bower:js -->
     <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/datatables/media/js/jquery.dataTables.js"></script>
     <script src="bower_components/growl/javascripts/jquery.growl.js"></script>
     <script src="bower_components/jquery-validate/dist/jquery.validate.js"></script>
-    <script src="bower_components/DataTables/media/js/jquery.dataTables.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
    
 
         <!-- build:js(.) scripts/plugins.js -->
-        <script src="../bower_components/bootstrap/js/affix.js"></script>
-        <script src="../bower_components/bootstrap/js/alert.js"></script>
-        <script src="../bower_components/bootstrap/js/dropdown.js"></script>
-        <script src="../bower_components/bootstrap/js/tooltip.js"></script>
-        <script src="../bower_components/bootstrap/js/modal.js"></script>
-        <script src="../bower_components/bootstrap/js/transition.js"></script>
-        <script src="../bower_components/bootstrap/js/button.js"></script>
-        <script src="../bower_components/bootstrap/js/popover.js"></script>
-        <script src="../bower_components/bootstrap/js/carousel.js"></script>
-        <script src="../bower_components/bootstrap/js/scrollspy.js"></script>
-        <script src="../bower_components/bootstrap/js/collapse.js"></script>
-        <script src="../bower_components/bootstrap/js/tab.js"></script>
-        <script src="../bower_components/growl/javascripts/jquery.growl.js"></script>
-        <script src="../bower_components/jquery-validate/dist/jquery.validate.js"></script>
+        
         <!-- endbuild -->
 
         <!-- build:js({app,.tmp}) scripts/main.js -->

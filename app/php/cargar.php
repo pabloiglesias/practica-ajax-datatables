@@ -2,7 +2,7 @@
 $table = 'vdoctoresclinicas';
 
 // Table's primary key
-$primaryKey = 'nombre_doctor';
+$primaryKey = 'id_doctor';
 
 // Array of database columns which should be read and sent back to DataTables.
 // The `db` parameter represents the column name in the database, while the `dt`
@@ -10,8 +10,12 @@ $primaryKey = 'nombre_doctor';
 // indexes
 $columns = array(
 	array(
+		'db' => 'id_doctor',
+		'dt' => 'iddoctor',
+	),
+	array(
 		'db' => 'nombre_doctor',
-		'dt' => 'nombre_doctor',
+		'dt' => 'nombredoctor',
 	),
 	array(
 		'db' => 'numcolegiado',
@@ -19,7 +23,7 @@ $columns = array(
 	),
 	array(
 		'db' => 'nombre_clinica',
-		'dt' => 'nombre_clinica',
+		'dt' => 'nombreclinica',
 	),
 );
 

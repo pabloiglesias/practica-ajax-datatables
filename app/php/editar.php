@@ -1,44 +1,55 @@
- <?php
-$table = 'vdoctoresclinicas';
+<?php
+header('Access-Control-Allow-Origin: *');
+header('content-type: application/json; charset=utf-8');
+$id_doctor = $_REQUEST['doctor'];
+$nombredoctor = $_REQUEST['nombre'];
+$clinicas = $_REQUEST['clinicas'];
+if (isset($_REQUEST['numcolegiado'])) {
+	$numcolegiado = $_REQUEST['numcolegiado'];
+} else {
+	$numcolegiado = null;
+}
+try {
+	//borrado
+	$op = array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8");
+	$dsn = "mysql:host=localhost;dbname=Clinicas";
+	$usu = "root";
+	$pass = "root";
+	$sql1 = "DELETE FROM clinica_doctor WHERE id_doctor=?;";
+	$dwes = new PDO($dsn, $usu, $pass);
+	$resul = $dwes->prepare($sql1);
+	$resul->execute(array($_REQUEST['doctor']));
+	$sql2 = "DELETE FROM doctores where id_doctor=?;";
+	$resul1 = $dwes->prepare($sql2);
+	$resul1->execute(array($_REQUEST['doctor']));
+	//creacion
+	$sql2 = "SELECT max(id_doctor) as ultimo FROM doctores;";
+	$resul2 = $dwec->prepare($sql2);
+	$resul2->execute();
+	$resul3 = $resul2->fetch();
+	$id_doctor = $resul3['ultimo'] + 1;
+	$sql3 = "INSERT INTO doctores (id_doctor , nombre , numcolegiado) VALUES (\" $id_doctor\" , \" $nombredoctor \" , \" $numcolegiado \");";
+	foreach ($clinicas as $key => $valor) {
+		$sql3 .= "INSERT  INTO clinica_doctor (id_doctor,id_clinica,numdoctor)VALUES ";
+		$sql3 .= "(  \"$id_doctor\",\" $valor\",null);";
+	}
+	$resul4 = $dwec->prepare($sql3);
+	$resul4->execute();
 
-// Table's primary key
-$primaryKey = 'nombre_doctor';
-
-// Array of database columns which should be read and sent back to DataTables.
-// The `db` parameter represents the column name in the database, while the `dt`
-// parameter represents the DataTables column identifier. In this case simple
-// indexes
-$columns = array(
-	array(
-		'db' => 'nombre_doctor',
-		'dt' => 'nombre_doctor',
-	),
-	array(
-		'db' => 'numcolegiado',
-		'dt' => 'numcolegiado',
-	),
-	array(
-		'db' => 'nombre_clinica',
-		'dt' => 'nombre_clinica',
-	),
+} catch (PDOException $e) {
+	die("Error: " . $e->getMessage());
+}
+if (!$resul || !$resul1 || !$resul2 || !$resul3) {
+	$mensaje = "Error en la Consulta";
+	$estado = 0;
+} else {
+	$mensaje = "Doctor Modificado";
+	$estado = 1;
+}
+$resultado = array();
+$resultado[] = array(
+	'mensaje' => $mensaje,
+	'estado' => $estado,
 );
-
-// SQL server connection information
-$sql_details = array(
-	'user' => 'root',
-	'pass' => 'root',
-	'db' => 'Clinicas',
-	'host' => 'localhost',
-);
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * If you just want to use the basic configuration for DataTables with PHP
- * server-side, there is no need to edit below this line.
- */
-
-require 'ssp.class.php';
-
-echo json_encode(
-	SSP::simple($_GET, $sql_details, $table, $primaryKey, $columns)
-);
+echo json_encode($resultado);
 ?>

@@ -1,6 +1,41 @@
 'use strict';
+/////////////////////Preparacion del documento y definicion de variables///////////
+ $(document).ready(function () {
+       var clinicas;
+       var miTabla;
+       var docOriginal;
+       var php='';
+       var validaciones = $('#Editar').validate({
+           rules: {
+               nombre: {
+                   required: true,
+                   lettersonlywithspaces: true
+               },
+               numcolegiado: {
+                   digits: true                   
+               },
+               clinicas: {
+                   required: true,
+                   minlength: '1'
+               }
+           },
+           messages:{
+                nombre:{
+                  required: 'Debes introducir el nombre del doctor',
+                  lettersonlywithspaces: 'Introduce solo caracteres'
+                },
+                colegiado:{
+                  digits: 'Introduce solo digitos'
+                },
+                clinica:{
+                  required: 'Debes marcar al menos una clinica'
+                }
+              },
+              submitHandler:function(){}
+       });
+
 ////////////////////CARGA INICIAL DE LA CLINICAS PARA SU POSTERIOR USO//////////////////
-var clinicas = $.ajax({
+ clinicas = $.ajax({
         
         url: 'php/clinicas.php',
         type: 'GET',
@@ -9,18 +44,17 @@ var clinicas = $.ajax({
     })
         .done(function(data) {
             $.each(data, function(index) {
-                $('.listaClinicas').append('<option class="option" value="'+data[index].id_clinica+'" >' + data[index].nombre + '</option>');
+                $('#inputClinicas').append('<option class="option" value="'+data[index].idclinica+'" >' + data[index].nombre + '</option>');
             });
         })
         .fail(function() {
-            console.log("error al cargar la lista de clinicas");
+            console.log('error al cargar la lista de clinicas');
         })
         .always(function() {
-            console.log("complete");
+            console.log('complete');
         });
 /////////////////////carga de los datos de la tabla/////////////////////////////////////////
-$(document).ready(function(){
-$('#miTabla').DataTable({
+  miTabla=$('#miTabla').DataTable({
     	   'processing': true,
            'serverSide': true,
            'ajax': 'php/cargar.php',           
@@ -48,57 +82,190 @@ $('#miTabla').DataTable({
                    'sSortDescending': ': Activar para ordenar la columna de manera descendente'
                }
            },
-           'columns': [{
-               'data': 'nombre_doctor'
-           }, {
-               'data': 'numcolegiado'
-           }, {
-               'data': 'nombre_clinica'
-           }, {
-               'data': 'numcolegiado',
-               /*añadimos las clases editarbtn y borrarbtn para procesar los eventos click de los botones. No lo hacemos mediante id ya que habrá más de un
-               botón de edición o borrado*/
-               'render': function(data) {
-                   return '<button class="editar btn btn-primary " value=' + data + '>Editar</button>';
+           'columns': 
+           [
+            {
+              'data': 'nombredoctor',
+              'render':function(data){
+                return '<a href="#"  class="editar" >'+ data +'</a>';
                }
-           },{
-               'data': 'numcolegiado',
-                'render': function(data) {
-                   return '<button class=" borrar btn btn-warning " value=' + data + '>Borrar</button>';
+           }, 
+           {
+              'data': 'numcolegiado'
+           },
+           {
+              'data': 'nombreclinica'
+           },
+           {
+              'data': 'iddoctor',
+               'render': function(data) {
+                   return '<button class="editar btn btn-primary" >Editar</button>';
+               }
+           },
+           {
+              'data': 'iddoctor',
+               'render': function(data) {
+                   return '<button class="borrar btn btn-warning">Borrar</button>';
                }
            }
-       	]
+           ]
        });
-});
 ////////////// Modal ///////////////////////
-
-///////////// Editar doctor/////////////////
-$('#mitabla').on('click', '#editar', function (e) {
-           e.preventDefault();
-           var nRow = $(this).parents('tr')[0];
-           var aData = $('#miTabla').row(nRow).data();
-           $('.inputNombre').val(aData.nombre_doctor);
-           $('#numcolegiado').val(aData.numcolegiado);
-           var clinicasOn = aData.clinicas;
-           var clin = clinicasOn.split(',');
-           $('#forEditar').modal('show');
-            });
-$('#editarbtn').click(function (e) {
+//////////////borrar doctor//////////////////////7
+$('#miTabla').on('click','.borrar',function (e){
   e.preventDefault();
-  $('#formulario').validate({
-    rules: {
-      nombre: {
-        required: true,
-        lettersonly: true
-      },
-      numcolegiado: {
-        digits: true
-      },
-      clinicas: {
-        required: true,
-        minlength: '1'
-      }
-    }
+ var nRow = $(this).parents('tr')[0];
+ var aData = miTabla.row(nRow).data();
+ var doctor = aData.iddoctor;
+  $('#forBorrar').modal('show');
+  $('#forBorrar').off('click' , '#borrarDoctor').on('click','#borrarDoctor', function(e){
+    e.preventDefault();
+    $.ajax({
+        data:{
+          doctor:doctor
+        },
+        url: 'php/borrar.php',
+        type: 'POST',
+        dataType: 'json',
+      
+        error :function(){
+          alert('error en el ajax');
+          $.growl.error({message:'Error en la llamada de ajax'});
+        },
+        success:function(data){
+         
+          $('#forBorrar').modal('hide');
+          var mensaje=data[0].mensaje;
+          if(data[0].estado === 0){
+            $.growl.error({message:mensaje});
+          }
+          else{
+           $.growl.notice({message:mensaje});
+           miTabla.draw();
+         }
+
+        }
+    });
   });
 });
- 
+//////////////////Nuevo Doctor////////////////////
+$('#botones').on('click','.nuevo',function(e){
+  e.preventDefault();
+  $('#forEditar').modal('show');
+  document.getElementById('Editar').reset();
+  $('#Editar').on('click','#ConfirmarGuardar',function(d){
+    d.preventDefault();
+    if (validaciones.form){
+    var doctor = $('#inputNombre').val();
+    var numcolegiado = $('#numcolegiado').val();
+    var clinicas = $('#inputClinicas').val();
+    var promesa = $.ajax({
+               data: {
+                   docO: docOriginal,
+                   doctor: doctor,
+                   numcolegiado: numcolegiado,
+                   clinicas: clinicas
+               },
+               dataType: 'json',
+               type: 'POST',
+               url: 'php/nuevo.php'
+           });
+           promesa.done(function(data){
+            var men = data[0]['mensaje'];
+               if (data[0]['estado'] === 0) {
+                   $.growl({
+                       message: men,
+                       style: 'error',
+                       title: 'Error !!!',
+                       message:men
+                   });
+                  
+               } else {
+                   $.growl({
+                       style: 'notice',
+                       title: 'OK !!!',
+                       message: men
+                    });
+                   miTabla.draw();
+                   $('#forEditar').modal('hide');
+                    miTabla.draw();
+               }
+           });
+           promesa.fail(function () {
+               $.growl.error({
+                   message: 'Fallo en la consulta.'
+               });
+           });
+           }
+  });
+});
+//////////////EDITAR////////////////////////
+$('#miTabla').on('click','.editar',function(e){
+  e.preventDefault();
+  var nRow = $(this).parents('tr')[0];
+  var aData = miTabla.row(nRow).data();
+  var doctor = aData.iddoctor;
+  var nombre=aData.nombredoctor;
+  var numero=aData.numcolegiado;
+  var clin=aData.nombreclinica.split('</li>,<li>');
+  $('#inputNombre').val(nombre);
+  $('#numcolegiado').val(numero);
+  clin.forEach(function(entrada){
+  console.log(entrada);  
+  var clin2=entrada;
+  $('#inputClinicas').each(function()
+  {
+    var clin3=$(this);
+    if(clin2==clin3.text()){
+      clin3.atrr('selected',true);
+    }
+    });
+  });
+  $('#forEditar').modal('show');
+  $('#Editar').of('click','#ConfirmarGuardar').on('click','#ConfirmarGuardar',function(d){
+    d.preventDefault();
+    if(validaciones.form){
+    var nombre = $('#inputNombre').val();
+    var numcolegiado = $('#numcolegiado').val();
+    var clinicas = $('#inputClinicas').val();
+    var promesa = $.ajax({
+               data: {
+                   docO: nombre,
+                   doctor: doctor,
+                   numcolegiado: numcolegiado,
+                   clinicas: clinicas
+               },
+               dataType: 'json',
+               type: 'POST',
+               url: 'php/editar.php'
+           });
+           promesa.done(function(data){
+            var men = data[0]['mensaje'];
+               if (data[0]['estado'] === 0) {
+                   $.growl({
+                       message: men,
+                       style: 'error',
+                       title: 'Error !!!',
+                       message:men
+                   });
+                  
+               } else {
+                   $.growl({
+                       style: 'notice',
+                       title: 'OK !!!',
+                       message: men
+                    });
+                   miTabla.draw();
+                   $('#forEditar').modal('hide');
+                    miTabla.draw();
+               }
+           });
+           promesa.fail(function () {
+               $.growl.error({
+                   message: 'Fallo en la consulta.'
+               });
+           });
+}//fin del if
+});
+});//fin modal editar
+});//fin ready

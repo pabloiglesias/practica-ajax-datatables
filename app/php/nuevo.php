@@ -1,30 +1,38 @@
 <?php
 header('Access-Control-Allow-Origin: *');
-$host = "localhost";
-$usuario = "root";
-$pass = "root";
-$db = "clinicas";
-$mysql = new mysqli($host, $usuario, $pass, $db);
-$mysql->set_charset('utf8');
-$nombredoctor = $_REQUEST['nombre'];
-$numcolegiado = $_REQUEST['colegiado'];
-$clinicas = $_REQUEST['clinicas'];
-if ($mysql->connect_error) {
-	die('Error de conexión: ' . $mysqli->connect_error);
+header('content-type: application/json; charset=utf-8');
+$nombredoctor = $_REQUEST['doctor'];
+if (isset($_REQUEST['numcolegiado'])) {
+	$numcolegiado = $_REQUEST['numcolegiado'];
 } else {
-	$consultaClinicas = 'SELECT max(id_doctor) as ultimo FROM doctores';
-	$ultimo = $mysql->query($consultaClinicas);
-	$row = $max->fetch_array();
-	$id_doctor = $row['ultimo'] + 1;
-	$consulta = 'INSERT INTO doctores (id_doctor , nombre , numcolegiado) VALUES ("' . $id_doctor . '" , "' . $nombredoctor . '" , "' . $numcolegiado . '")';
-	$query_res = $mysql->query($consulta);
-
-	for ($i = 0; $i < count($clinicas); $i++) {
-		$consulta1 = 'INSERT INTO vdoctoresclinicas (id_doctor , id_clinica) VALUES (' . $id_doctor . ',' . $clinicas[$i] . ')';
-		$query_res1 = $mysql->query($consulta1);
-	}
+	$numcolegiado = null;
 }
-if (!$query_res || !$query_res1) {
+
+$clinicas = $_REQUEST['clinicas'];
+try {
+	$op = array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8");
+	$dsn = "mysql:host=localhost;dbname=Clinicas";
+	$usu = "root";
+	$pass = "root";
+	$consultaClinicas = "SELECT max(id_doctor) as ultimo FROM doctores;";
+	$dwec = new PDO($dsn, $usu, $pass);
+	if (isset($dwec)) {
+		$resul = $dwec->prepare($consultaClinicas);
+		$resul->execute();
+		$result = $resul->fetch();
+		$id_doctor = $result['ultimo'] + 1;
+		$consulta = "INSERT INTO doctores (id_doctor , nombre , numcolegiado) VALUES (\" $id_doctor\" , \" $nombredoctor \" , \" $numcolegiado \");";
+		foreach ($clinicas as $key => $valor) {
+			$consulta .= "INSERT  INTO clinica_doctor (id_doctor,id_clinica,numdoctor)VALUES ";
+			$consulta .= "(  \"$id_doctor\",\" $valor\",null);";
+		}
+		$resul = $dwec->prepare($consulta);
+		$resul->execute();
+	}
+} catch (PDOException $e) {
+	die("Error: " . $e->getMessage());
+}
+if (!$resul) {
 	$mensaje = "Error en la Consulta";
 	$estado = 0;
 } else {
