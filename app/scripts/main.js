@@ -213,10 +213,10 @@ $('#miTabla').on('click','.editar',function(e){
   clin.forEach(function(entrada){
   console.log(entrada);  
   var clin2=entrada;
-  $('#inputClinicas').each(function()
+  $('#inputClinicas').find('option').each(function()
   {
     var clin3=$(this);
-    if(clin2==clin3.text()){
+    if(clin2===clin3.text()){
       clin3.atrr('selected',true);
     }
     });
