@@ -4,6 +4,9 @@ header('content-type: application/json; charset=utf-8');
 $doc = $_REQUEST['doctor'];
 try {
 	$op = array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8");
+	//$dsn = "mysql:host=localhost,dbname=pabloiglesias_ajax";
+	//$usu = "pabloiglesias_dc";
+	//$pass = "pabloiglesias";
 	$dsn = "mysql:host=localhost;dbname=Clinicas";
 	$usu = "root";
 	$pass = "root";

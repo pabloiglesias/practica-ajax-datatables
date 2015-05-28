@@ -9,7 +9,7 @@
            rules: {
                nombre: {
                    required: true,
-                   lettersonlywithspaces: true
+                   lettersonly: true
                },
                numcolegiado: {
                    digits: true                   
@@ -32,6 +32,15 @@
                 }
               },
               submitHandler:function(){}
+       });
+$.validator.addMethod('lettersonly', function (value, element) {
+           return this.optional(element) || /^[a-z ñáéíóú]+$/i.test(value);
+       }, 'Introduce solo letras.');
+       // Añadimos al Validate el idioma en español.
+       $.extend($.validator.messages, {
+           required: 'Este campo es obligatorio.',
+           digits: 'Por favor, escribe sólo dígitos.',
+           minlength: $.validator.format('Por favor, no escribas menos de {0} caracteres.'),
        });
 
 ////////////////////CARGA INICIAL DE LA CLINICAS PARA SU POSTERIOR USO//////////////////
@@ -153,7 +162,7 @@ $('#botones').on('click','.nuevo',function(e){
   e.preventDefault();
   $('#forEditar').modal('show');
   document.getElementById('Editar').reset();
-  $('#Editar').on('click','#ConfirmarGuardar',function(d){
+  $('#Editar').off('click','#ConfirmarGuardar').on('click','#ConfirmarGuardar',function(d){
     d.preventDefault();
     if (validaciones.form){
     var doctor = $('#inputNombre').val();
@@ -222,7 +231,7 @@ $('#miTabla').on('click','.editar',function(e){
     });
   });
   $('#forEditar').modal('show');
-  $('#Editar').of('click','#ConfirmarGuardar').on('click','#ConfirmarGuardar',function(d){
+  $('#Editar').off('click','#ConfirmarGuardar').on('click','#ConfirmarGuardar',function(d){
     d.preventDefault();
     if(validaciones.form){
     var nombre = $('#inputNombre').val();
@@ -255,8 +264,7 @@ $('#miTabla').on('click','.editar',function(e){
                        title: 'OK !!!',
                        message: men
                     });
-                   miTabla.draw();
-                   $('#forEditar').modal('hide');
+                     $('#forEditar').modal('hide');
                     miTabla.draw();
                }
            });

@@ -2,7 +2,8 @@
 header('Access-Control-Allow-Origin: *');
 header('content-type: application/json; charset=utf-8');
 $connect = mysql_connect("localhost", "root", "root")
-or die('Could not connect: ' . mysql_error());
+//$connect = mysql_connect("localhost", "pabloiglesias_dc", "pabloiglesias")
+ or die('Could not connect: ' . mysql_error());
 $bool = mysql_select_db("Clinicas", $connect);
 if ($bool === False) {
 	print "No puedo encontrar la bbdd";
